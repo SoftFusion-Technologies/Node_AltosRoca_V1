@@ -12,6 +12,16 @@
 
 import express from 'express'; // Importa la librería Express
 
+// Importar controladores de locales
+import {
+  OBRS_Sedes_CTS,
+  OBR_Sede_CTS,
+  CR_Sede_CTS,
+  ER_Sede_CTS,
+  UR_Sede_CTS
+} from '../Controllers/Core/CTS_TB_Sedes.js';
+// Importar controladores de locales
+
 import {
   OBR_Users_CTS,
   OBRS_Users_CTS,
@@ -244,6 +254,12 @@ const router = express.Router();
 // Define las rutas para cada método del controlador
 // ----------------------------------------------------------------
 
+// Define las rutas para Sedes
+router.get('/sedes', OBRS_Sedes_CTS);
+router.get('/sedes/:id', OBR_Sede_CTS);
+router.post('/sedes', CR_Sede_CTS);
+router.delete('/sedes/:id', ER_Sede_CTS);
+router.put('/sedes/:id', UR_Sede_CTS);
 // ----------------------------------------------------------------
 // Ruta para obtener todos los registros de Users_CTS tb_1
 // ----------------------------------------------------------------

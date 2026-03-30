@@ -1,11 +1,11 @@
 /*
  * Programador: Benjamin Orellana
  * Fecha Creación: 23 /05 / 2025
- * Versión: 1.0
+ * Versión: 1.1
  *
  * Descripción:
  * Este archivo (MD_TB_Users.js) contiene la definición del modelo Sequelize para la tabla users,
- * incluyendo la asociación con el modelo students.
+ * incluyendo la nueva asociación con la tabla Sedes.
  *
  * Tema: Modelos - Users
  *
@@ -15,8 +15,7 @@
 import dotenv from 'dotenv';
 import db from '../DataBase/db.js';
 import { DataTypes } from 'sequelize';
-import StudentsModel from './MD_TB_Students.js'; // Importa el modelo de students para la asociación
-import RoutinesModel from './MD_TB_Routines.js'; // Importa el modelo de students para la asociación
+import SedesModel from './MD_TB_Sedes.js';
 
 if (process.env.NODE_ENV !== 'production') {
   dotenv.config();
@@ -25,6 +24,11 @@ if (process.env.NODE_ENV !== 'production') {
 const UsersModel = db.define(
   'users',
   {
+    id: {
+      type: DataTypes.BIGINT.UNSIGNED,
+      autoIncrement: true,
+      primaryKey: true
+    },
     name: {
       type: DataTypes.STRING,
       allowNull: false
@@ -46,10 +50,28 @@ const UsersModel = db.define(
       type: DataTypes.STRING,
       allowNull: false
     },
+
+    // Benjamin Orellana - 29 / 03 / 2026 - Se agrega el rol formal del usuario para normalizar permisos
+    rol: {
+      type: DataTypes.ENUM('admin', 'socio', 'vendedor', 'instructor'),
+      allowNull: false
+    },
+
     sede: {
       type: DataTypes.STRING,
       allowNull: true
     },
+
+    // Benjamin Orellana - 29 / 03 / 2026 - Se agrega la relación física del usuario con la tabla Sedes
+    sede_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'Sedes',
+        key: 'id'
+      }
+    },
+
     state: {
       type: DataTypes.STRING,
       allowNull: false
@@ -68,8 +90,23 @@ const UsersModel = db.define(
     }
   },
   {
+    tableName: 'users',
     timestamps: false
   }
 );
 
+// Benjamin Orellana - 29 / 03 / 2026 - Asociación entre users y Sedes usando sede_id
+UsersModel.belongsTo(SedesModel, {
+  foreignKey: 'sede_id',
+  as: 'sedeRelacion'
+});
+
+SedesModel.hasMany(UsersModel, {
+  foreignKey: 'sede_id',
+  as: 'usuarios'
+});
+
+const UserModel = UsersModel;
+
+export { UsersModel, UserModel };
 export default UsersModel;

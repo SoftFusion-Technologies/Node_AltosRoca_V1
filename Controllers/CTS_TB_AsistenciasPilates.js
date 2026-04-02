@@ -11,7 +11,7 @@
 import AsistenciasPilatesModel from "../Models/MD_TB_AsistenciasPilates.js";
 import InscripcionesPilatesModel from "../Models/MD_TB_InscripcionesPilates.js";
 import ClientesPilatesModel from "../Models/MD_TB_ClientesPilates.js";
-import UsersModel from "../Models/MD_TB_Users.js";
+import UsersModel from "../Models/Core/MD_TB_Users.js";
 import MD_TB_HorariosPilates from "../Models/MD_TB_HorariosPilates.js";
 import db from "../DataBase/db.js";
 import { QueryTypes, Op, fn, col, literal } from "sequelize";

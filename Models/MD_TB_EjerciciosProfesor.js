@@ -13,7 +13,7 @@
 import dotenv from 'dotenv';
 import db from '../DataBase/db.js';
 import { DataTypes } from 'sequelize';
-import UsersModel from './MD_TB_Users.js';
+import UsersModel from './Core/MD_TB_Users.js';
 if (process.env.NODE_ENV !== 'production') {
   dotenv.config();
 }

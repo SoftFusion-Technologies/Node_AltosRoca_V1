@@ -12,7 +12,7 @@
  */
 
 import dotenv from 'dotenv';
-import db from '../DataBase/db.js';
+import db from '../../DataBase/db.js';
 import { DataTypes } from 'sequelize';
 
 if (process.env.NODE_ENV !== 'production') {

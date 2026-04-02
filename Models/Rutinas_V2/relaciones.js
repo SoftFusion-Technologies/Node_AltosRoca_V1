@@ -22,7 +22,7 @@ import ProgresoRutinaAlumnoModel from './MD_TB_ProgresoRutinaAlumno.js';
 // 📝 NUEVO: logs de serie (routine_exercise_logs con FK serie_id)
 import RoutineExerciseLogsModel from '../MD_TB_RoutineExerciseLogs.js';
 
-import UsersModel from '../MD_TB_Users.js';
+import UsersModel from '../Core/MD_TB_Users.js';
 import PseRegistrosModel from './MD_TB_PseRegistros.js';
 
 // 🧑‍🏫 Student → Rutinas

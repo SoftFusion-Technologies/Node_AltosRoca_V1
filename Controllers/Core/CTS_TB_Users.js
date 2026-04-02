@@ -26,8 +26,8 @@ import bcrypt from 'bcryptjs';
 import { Op } from 'sequelize';
 
 // Importa los modelos necesarios desde el archivo
-import UsersModel from '../Models/MD_TB_Users.js';
-import SedesModel from '../Models/MD_TB_Sedes.js';
+import UsersModel from '../../Models/Core/MD_TB_Users.js';
+import SedesModel from '../../Models/Core/MD_TB_Sedes.js';
 
 const SALT_ROUNDS = 10;
 
@@ -40,7 +40,7 @@ const includeSede = [
 ];
 
 const atributosSinSensibles = {
-  exclude: ['password', 'remember_token']
+  exclude: ['password']
 };
 
 // Benjamin Orellana - 29 / 03 / 2026 - Normaliza compatibilidad entre level y rol para no romper front ni lógica existente

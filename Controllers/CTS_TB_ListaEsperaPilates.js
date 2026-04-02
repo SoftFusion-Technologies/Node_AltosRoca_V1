@@ -1,6 +1,6 @@
 import ListaEsperaPilates from "../Models/MD_TB_ListaEsperaPilates.js";
 import ContactosListaEsperaPilatesModel from "../Models/MD_TB_ContactosListaEsperaPilates.js";
-import UsersModel from "../Models/MD_TB_Users.js";
+import UsersModel from "../Models/Core/MD_TB_Users.js";
 
 const normalizeForComparison = (value = "") =>
   value

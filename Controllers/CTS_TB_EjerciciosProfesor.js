@@ -11,7 +11,7 @@
  */
 
 import EjerciciosProfesorModel from '../Models/MD_TB_EjerciciosProfesor.js';
-import UsersModel from '../Models/MD_TB_Users.js';
+import UsersModel from '../Models/Core/MD_TB_Users.js';
 // Obtener todos los ejercicios de un profesor, opcionalmente filtrando por nombre
 export const OBRS_EjerciciosProfesor_CTS = async (req, res) => {
   try {

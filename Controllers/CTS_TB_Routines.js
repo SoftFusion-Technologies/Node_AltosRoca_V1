@@ -12,6 +12,7 @@
 // Importa el modelo necesario
 import RoutinesModel from '../Models/MD_TB_Routines.js';
 import RoutineExercisesModel from '../Models/MD_TB_RoutineExercises.js';
+import UserModel from '../Models/Core/MD_TB_Users.js';
 
 // Mostrar todos los registros de routines o filtrar por student_id
 // Mostrar todos los registros de routines o filtrar por student_id, incluyendo ejercicios anidados
@@ -176,7 +177,6 @@ export const UR_CompletarRutina_CTS = async (req, res) => {
     return res.status(500).json({ mensajeError: error.message });
   }
 };
-import UserModel from '../Models/MD_TB_Users.js'; // Asegurate de importar tu modelo de usuario
 
 export const OBRS_RoutinesByInstructor_CTS = async (req, res) => {
   try {

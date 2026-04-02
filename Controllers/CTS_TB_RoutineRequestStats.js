@@ -8,7 +8,7 @@
  */
 
 import RoutineRequestStatsModel from '../Models/MD_TB_RoutineRequestStats.js';
-import UserModel from '../Models/MD_TB_Users.js';
+import UserModel from '../Models/Core/MD_TB_Users.js';
 
 // Consultar estadísticas por instructor, mes y año (opcional)
 // export const getStats = async (req, res) => {

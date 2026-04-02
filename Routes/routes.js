@@ -30,7 +30,7 @@ import {
   ER_Users_CTS,
   UR_Users_CTS
   // Importa los controladores necesarios para la tabla password_reset - tb_15
-} from '../Controllers/CTS_TB_Users.js';
+} from '../Controllers/Core/CTS_TB_Users.js';
 
 import {
   OBR_Students_CTS,

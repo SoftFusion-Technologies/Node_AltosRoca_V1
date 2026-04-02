@@ -1,4 +1,4 @@
-import UsersModel from './MD_TB_Users.js';
+import UsersModel from './Core/MD_TB_Users.js';
 import RoutinesModel from './MD_TB_Routines.js';
 import RoutineExercisesModel from './MD_TB_RoutineExercises.js';
 

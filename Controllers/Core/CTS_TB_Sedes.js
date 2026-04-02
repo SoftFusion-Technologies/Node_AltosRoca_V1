@@ -19,7 +19,7 @@
  */
 
 // Importar el modelo
-import SedesModel from '../../Models/MD_TB_Sedes.js';
+import SedesModel from '../../Models/Core/MD_TB_Sedes.js';
 import { Op } from 'sequelize';
 
 // Obtener todos los Sedes

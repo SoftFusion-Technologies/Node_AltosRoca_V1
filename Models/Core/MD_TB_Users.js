@@ -13,9 +13,9 @@
  */
 
 import dotenv from 'dotenv';
-import db from '../DataBase/db.js';
+import db from '../../DataBase/db.js';
 import { DataTypes } from 'sequelize';
-import SedesModel from './MD_TB_Sedes.js';
+import SedesModel from '../Core/MD_TB_Sedes.js';
 
 if (process.env.NODE_ENV !== 'production') {
   dotenv.config();
@@ -37,10 +37,6 @@ const UsersModel = db.define(
       type: DataTypes.STRING,
       allowNull: false,
       unique: true
-    },
-    email_verified_at: {
-      type: DataTypes.DATE,
-      allowNull: true
     },
     password: {
       type: DataTypes.STRING,
@@ -75,10 +71,6 @@ const UsersModel = db.define(
     state: {
       type: DataTypes.STRING,
       allowNull: false
-    },
-    remember_token: {
-      type: DataTypes.STRING,
-      allowNull: true
     },
     created_at: {
       type: DataTypes.DATE,

@@ -26,14 +26,13 @@ const RutinasModel = db.define(
       primaryKey: true,
       autoIncrement: true
     },
-
+    /* Benjamin Orellana - 06/04/2026 - Se habilita student_id nullable para soportar rutinas base sin alumno asignado */
     student_id: {
       type: DataTypes.BIGINT.UNSIGNED,
-      allowNull: false,
+      allowNull: true,
       references: { model: 'students', key: 'id' },
       onDelete: 'CASCADE'
     },
-
     // 🔹 NUEVO: instructor_id
     instructor_id: {
       type: DataTypes.BIGINT.UNSIGNED,

@@ -71,6 +71,7 @@ export const OBR_RutinaCompleta_CTS = async (req, res) => {
 export const CR_RutinaCompleta_CTS = async (req, res) => {
   const t = await db.transaction();
   try {
+    /* Benjamin Orellana - 06/04/2026 - Se permite crear rutinas base sin alumno asignado y se valida student_id solo cuando llega informado */
     const {
       student_id,
       instructor_id,
@@ -82,19 +83,42 @@ export const CR_RutinaCompleta_CTS = async (req, res) => {
       bloques
     } = req.body;
 
-    // Validación básica de campos obligatorios
-    if (!student_id || !instructor_id || !nombre || !bloques?.length) {
+    const studentIdNormalizado =
+      student_id !== undefined &&
+      student_id !== null &&
+      String(student_id).trim() !== ''
+        ? Number(student_id)
+        : null;
+
+    if (!instructor_id || !nombre || !bloques?.length) {
+      await t.rollback();
       return res.status(400).json({
-        mensajeError: 'Faltan datos obligatorios: student_id, nombre o bloques'
+        mensajeError:
+          'Faltan datos obligatorios: instructor_id, nombre o bloques'
       });
     }
 
-    // Validar si el student_id existe
-    const alumno = await StudentsModel.findByPk(student_id);
-    if (!alumno) {
-      return res.status(404).json({
-        mensajeError: `El alumno con ID ${student_id} no existe`
+    if (
+      studentIdNormalizado !== null &&
+      (!Number.isInteger(studentIdNormalizado) || studentIdNormalizado <= 0)
+    ) {
+      await t.rollback();
+      return res.status(400).json({
+        mensajeError: 'El student_id informado no es válido'
       });
+    }
+
+    if (studentIdNormalizado !== null) {
+      const alumno = await StudentsModel.findByPk(studentIdNormalizado, {
+        transaction: t
+      });
+
+      if (!alumno) {
+        await t.rollback();
+        return res.status(404).json({
+          mensajeError: `El alumno con ID ${studentIdNormalizado} no existe`
+        });
+      }
     }
 
     // ✅ Validación de fechas

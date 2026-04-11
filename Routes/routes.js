@@ -163,7 +163,8 @@ import {
   CR_StudentRM_CTS,
   ER_StudentRM_CTS,
   UR_StudentRM_CTS,
-  OBRS_HistorialRM_CTS
+  OBRS_HistorialRM_CTS,
+  OBR_DashboardStudentRM_CTS
 } from '../Controllers/CTS_TB_StudentRM.js';
 // NUEVO MODULO DE GESTION DE RM
 
@@ -505,23 +506,16 @@ router.put('/meal_items/:id', UR_MealItems_CTS);
 router.delete('/meal_items/:id', ER_MealItems_CTS);
 // NUEVO MODULO DE DIETAS
 
-// ----------------------------------------------------------------
-// Obtener todos los registros de RM (opcionalmente filtrar por student_id)
+/* Benjamin Orellana - 2026/04/11 - Rutas específicas de dashboard e historial para RM */
+router.get('/student-rm/dashboard', OBR_DashboardStudentRM_CTS);
+router.get('/student-rm/historial', OBRS_HistorialRM_CTS);
+
+/* Benjamin Orellana - 2026/04/11 - CRUD principal de RM */
 router.get('/student-rm', OBRS_StudentRM_CTS);
-
-// Obtener un registro de RM por ID
 router.get('/student-rm/:id', OBR_StudentRM_CTS);
-
-// Crear un nuevo registro de RM
 router.post('/student-rm', CR_StudentRM_CTS);
-
-// Eliminar un registro de RM por ID
-router.delete('/student-rm/:id', ER_StudentRM_CTS);
-
-// Actualizar un registro de RM por ID
 router.put('/student-rm/:id', UR_StudentRM_CTS);
-
-router.get('/rm-historial', OBRS_HistorialRM_CTS); // http://localhost:8080/rm-historial?student_id=18&ejercicio=Sentadilla
+router.delete('/student-rm/:id', ER_StudentRM_CTS);
 
 // ----------------------------------------------------------------
 // Obtener todos los logs o filtrar por alumno y/o ejercicio

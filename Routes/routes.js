@@ -11,6 +11,9 @@
 */
 
 import express from 'express'; // Importa la librería Express
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
 
 // Importar controladores de locales
 import {
@@ -978,6 +981,137 @@ router.put('/alianzas-notas/:id', UR_AlianzasNotas_CTS);
 
 router.delete('/alianzas-notas/:id', ER_AlianzasNotas_CTS);
 
+import {
+  OBRS_StudentGalleryPosts_CTS,
+  OBRS_StudentGalleryPostsPublicHome_CTS,
+  OBR_StudentGalleryPost_CTS,
+  CR_StudentGalleryPost_CTS,
+  UR_StudentGalleryPost_CTS,
+  APROBAR_StudentGalleryPost_CTS,
+  RECHAZAR_StudentGalleryPost_CTS,
+  ARCHIVAR_StudentGalleryPost_CTS,
+  ER_StudentGalleryPost_CTS
+} from '../Controllers/Galeria/CTS_TB_StudentGalleryPosts.js';
+
+
+/* Benjamin Orellana - 2026/04/14 - Rutas operativas y públicas del módulo de publicaciones de galería. */
+router.get('/student-gallery-posts', OBRS_StudentGalleryPosts_CTS);
+router.get('/student-gallery-posts/public/home', OBRS_StudentGalleryPostsPublicHome_CTS);
+router.get('/student-gallery-posts/:id', OBR_StudentGalleryPost_CTS);
+router.post('/student-gallery-posts', CR_StudentGalleryPost_CTS);
+router.put('/student-gallery-posts/:id', UR_StudentGalleryPost_CTS);
+router.put('/student-gallery-posts/:id/aprobar', APROBAR_StudentGalleryPost_CTS);
+router.put('/student-gallery-posts/:id/rechazar', RECHAZAR_StudentGalleryPost_CTS);
+router.put('/student-gallery-posts/:id/archivar', ARCHIVAR_StudentGalleryPost_CTS);
+router.delete('/student-gallery-posts/:id', ER_StudentGalleryPost_CTS);
+
+import {
+  OBRS_StudentGalleryMedia_CTS,
+  OBRS_StudentGalleryMediaByPost_CTS,
+  OBR_StudentGalleryMedia_CTS,
+  CR_StudentGalleryMedia_CTS,
+  UR_StudentGalleryMedia_CTS,
+  UR_StudentGalleryMediaReordenar_CTS,
+  UR_StudentGalleryMediaSetPortada_CTS,
+  ER_StudentGalleryMedia_CTS,
+  UPLOAD_StudentGalleryMediaFile_CTS
+} from '../Controllers/Galeria/CTS_TB_StudentGalleryMedia.js';
+
+
+/* Benjamin Orellana - 2026/04/14 - Rutas operativas del módulo de medios de galería. */
+router.get('/student-gallery-media', OBRS_StudentGalleryMedia_CTS);
+router.get(
+  '/student-gallery-media/post/:post_id',
+  OBRS_StudentGalleryMediaByPost_CTS
+);
+router.get('/student-gallery-media/:id', OBR_StudentGalleryMedia_CTS);
+router.post('/student-gallery-media', CR_StudentGalleryMedia_CTS);
+router.put('/student-gallery-media/:id', UR_StudentGalleryMedia_CTS);
+router.put(
+  '/student-gallery-media/post/:post_id/reordenar',
+  UR_StudentGalleryMediaReordenar_CTS
+);
+router.put(
+  '/student-gallery-media/:id/set-portada',
+  UR_StudentGalleryMediaSetPortada_CTS
+);
+router.delete('/student-gallery-media/:id', ER_StudentGalleryMedia_CTS);
 // ----------------------------------------
+
+/* Benjamin Orellana - 2026/04/14 - Configuración multer para subida física de imágenes y videos del módulo de galería. */
+const studentGalleryDir = path.join(process.cwd(), 'public', 'student-gallery');
+
+if (!fs.existsSync(studentGalleryDir)) {
+  fs.mkdirSync(studentGalleryDir, { recursive: true });
+}
+
+/* Benjamin Orellana - 2026/04/14 - Normaliza nombres de archivo para evitar caracteres problemáticos. */
+const sanitizeFileName = (fileName = 'archivo') => {
+  const baseName = fileName
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/[^a-zA-Z0-9._-]/g, '')
+    .toLowerCase();
+
+  return baseName || 'archivo';
+};
+
+const storageStudentGallery = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, studentGalleryDir);
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname || '');
+    const nameWithoutExt = path.basename(file.originalname || 'archivo', ext);
+    const safeName = sanitizeFileName(nameWithoutExt);
+    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+
+    cb(null, `${safeName}-${uniqueSuffix}${ext}`);
+  }
+});
+
+const fileFilterStudentGallery = (req, file, cb) => {
+  const allowedMimeTypes = [
+    'image/jpeg',
+    'image/jpg',
+    'image/png',
+    'image/webp',
+    'video/mp4',
+    'video/webm',
+    'video/quicktime'
+  ];
+
+  if (!allowedMimeTypes.includes(file.mimetype)) {
+    return cb(
+      new Error(
+        'Formato no permitido. Solo se aceptan imágenes JPG, PNG, WEBP y videos MP4, WEBM o MOV.'
+      )
+    );
+  }
+
+  cb(null, true);
+};
+
+const uploadStudentGalleryMedia = multer({
+  storage: storageStudentGallery,
+  fileFilter: fileFilterStudentGallery,
+  limits: {
+    fileSize: 25 * 1024 * 1024
+  }
+});
+
+/* Benjamin Orellana - 2026/04/14 - Endpoint de subida física de archivos para galería de alumnos. */
+router.post('/student-gallery-media/upload', (req, res, next) => {
+  uploadStudentGalleryMedia.single('file')(req, res, (err) => {
+    if (err) {
+      return res.status(400).json({
+        mensajeError: err.message
+      });
+    }
+
+    next();
+  });
+}, UPLOAD_StudentGalleryMediaFile_CTS);
 // Exporta el enrutador
 export default router;

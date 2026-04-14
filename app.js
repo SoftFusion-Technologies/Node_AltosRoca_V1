@@ -33,6 +33,12 @@ import initEmpresasRelaciones from './Models/Empresas/relaciones_empresas.js';
 
 // Benjamin Orellana - 2026/04/13 - Inicializa relaciones Sequelize del módulo Empresas / Alianzas.
 initEmpresasRelaciones();
+/* Benjamin Orellana - 2026/04/14 - Se inicializan relaciones del módulo de galería de alumnos. */
+import initGaleriaRelaciones from './Models/galeria_relaciones.js';
+
+initGaleriaRelaciones();
+
+import path from 'path';
 // CONFIGURACION PRODUCCION
 if (process.env.NODE_ENV !== 'production') {
   dotenv.config();
@@ -46,6 +52,12 @@ const app = express();
 app.use(cors()); // aca configuramos cors para no tener errores
 app.use(express.json());
 app.use('/', GetRoutes);
+
+/* Benjamin Orellana - 2026/04/14 - Publica archivos físicos del módulo de galería mediante una URL limpia. */
+app.use(
+  '/student-gallery-files',
+  express.static(path.join(process.cwd(), 'public', 'student-gallery'))
+);
 // definimos la conexion
 
 // Para verificar si nuestra conexión funciona, lo hacemos con el método authenticate()

@@ -811,5 +811,173 @@ router.put('/contactos-lista-espera/:id_lista_espera', UR_modificarEstadoContact
 
 // NOTA: omito rutas relacionadas con 'ventas-prospectos' y otras no presentes/importadas en este proyecto
 
+// Benjamin Orellana - 2026/04/13 - Import de controladores del módulo Alianzas Oportunidades.
+import {
+  OBRS_AlianzasOportunidades_CTS,
+  OBR_AlianzasOportunidades_CTS,
+  OBR_Detalle_AlianzasOportunidades_CTS,
+  CR_AlianzasOportunidades_CTS,
+  UR_AlianzasOportunidades_CTS,
+  ER_AlianzasOportunidades_CTS,
+  CR_RegistroPublicoAlianzas_CTS
+} from '../Controllers/Empresas/CTS_TB_AlianzasOportunidades.js';
+
+// ----------------------------------------
+// Alianzas Oportunidades
+
+router.get('/alianzas-oportunidades', OBRS_AlianzasOportunidades_CTS);
+
+router.get('/alianzas-oportunidades/:id', OBR_AlianzasOportunidades_CTS);
+
+router.get(
+  '/alianzas-oportunidades/:id/detalle',
+  OBR_Detalle_AlianzasOportunidades_CTS
+);
+
+router.post('/alianzas-oportunidades', CR_AlianzasOportunidades_CTS);
+
+router.put('/alianzas-oportunidades/:id', UR_AlianzasOportunidades_CTS);
+
+router.delete('/alianzas-oportunidades/:id', ER_AlianzasOportunidades_CTS);
+
+// Registro público de empresa / emprendimiento para publicidad o convenio
+router.post('/alianzas-publico/registro', CR_RegistroPublicoAlianzas_CTS);
+
+// ----------------------------------------
+
+// Benjamin Orellana - 2026/04/13 - Import de controladores del módulo Alianzas Empresas.
+import {
+  OBRS_AlianzasEmpresas_CTS,
+  OBR_AlianzasEmpresas_CTS,
+  CR_AlianzasEmpresas_CTS,
+  UR_AlianzasEmpresas_CTS,
+  ER_AlianzasEmpresas_CTS
+} from '../Controllers/Empresas/CTS_TB_AlianzasEmpresas.js';
+
+// ----------------------------------------
+// Alianzas Empresas
+
+router.get('/alianzas-empresas', OBRS_AlianzasEmpresas_CTS);
+
+router.get('/alianzas-empresas/:id', OBR_AlianzasEmpresas_CTS);
+
+router.post('/alianzas-empresas', CR_AlianzasEmpresas_CTS);
+
+router.put('/alianzas-empresas/:id', UR_AlianzasEmpresas_CTS);
+
+router.delete('/alianzas-empresas/:id', ER_AlianzasEmpresas_CTS);
+
+// ----------------------------------------
+
+// Benjamin Orellana - 2026/04/13 - Import de controladores del módulo Alianzas Contactos.
+import {
+  OBRS_AlianzasContactos_CTS,
+  OBR_AlianzasContactos_CTS,
+  CR_AlianzasContactos_CTS,
+  UR_AlianzasContactos_CTS,
+  ER_AlianzasContactos_CTS
+} from '../Controllers/Empresas/CTS_TB_AlianzasContactos.js';
+
+// ----------------------------------------
+// Alianzas Contactos
+
+router.get('/alianzas-contactos', OBRS_AlianzasContactos_CTS);
+
+router.get('/alianzas-contactos/:id', OBR_AlianzasContactos_CTS);
+
+router.post('/alianzas-contactos', CR_AlianzasContactos_CTS);
+
+router.put('/alianzas-contactos/:id', UR_AlianzasContactos_CTS);
+
+router.delete('/alianzas-contactos/:id', ER_AlianzasContactos_CTS);
+
+// ----------------------------------------
+
+// Benjamin Orellana - 2026/04/14 - Import de controladores del módulo Alianzas Espacios.
+import {
+  OBRS_AlianzasEspacios_CTS,
+  OBR_AlianzasEspacios_CTS,
+  CR_AlianzasEspacios_CTS,
+  UR_AlianzasEspacios_CTS,
+  ER_AlianzasEspacios_CTS
+} from '../Controllers/Empresas/CTS_TB_AlianzasEspacios.js';
+
+// ----------------------------------------
+// Alianzas Espacios
+
+router.get('/alianzas-espacios', OBRS_AlianzasEspacios_CTS);
+
+router.get('/alianzas-espacios/:id', OBR_AlianzasEspacios_CTS);
+
+router.post('/alianzas-espacios', CR_AlianzasEspacios_CTS);
+
+router.put('/alianzas-espacios/:id', UR_AlianzasEspacios_CTS);
+
+router.delete('/alianzas-espacios/:id', ER_AlianzasEspacios_CTS);
+
+// ----------------------------------------
+
+// Benjamin Orellana - 2026/04/14 - Import de controladores del módulo Alianzas Oportunidad Espacios.
+import {
+  OBRS_AlianzasOportunidadEspacios_CTS,
+  OBR_AlianzasOportunidadEspacios_CTS,
+  CR_AlianzasOportunidadEspacios_CTS,
+  UR_AlianzasOportunidadEspacios_CTS,
+  ER_AlianzasOportunidadEspacios_CTS
+} from '../Controllers/Empresas/CTS_TB_AlianzasOportunidadEspacios.js';
+
+// ----------------------------------------
+// Alianzas Oportunidad Espacios
+
+router.get(
+  '/alianzas-oportunidad-espacios',
+  OBRS_AlianzasOportunidadEspacios_CTS
+);
+
+router.get(
+  '/alianzas-oportunidad-espacios/:id',
+  OBR_AlianzasOportunidadEspacios_CTS
+);
+
+router.post(
+  '/alianzas-oportunidad-espacios',
+  CR_AlianzasOportunidadEspacios_CTS
+);
+
+router.put(
+  '/alianzas-oportunidad-espacios/:id',
+  UR_AlianzasOportunidadEspacios_CTS
+);
+
+router.delete(
+  '/alianzas-oportunidad-espacios/:id',
+  ER_AlianzasOportunidadEspacios_CTS
+);
+
+// ----------------------------------------
+
+// Benjamin Orellana - 2026/04/14 - Import de controladores del módulo Alianzas Notas.
+import {
+  OBRS_AlianzasNotas_CTS,
+  OBR_AlianzasNotas_CTS,
+  CR_AlianzasNotas_CTS,
+  UR_AlianzasNotas_CTS,
+  ER_AlianzasNotas_CTS
+} from '../Controllers/Empresas/CTS_TB_AlianzasNotas.js';
+
+// ----------------------------------------
+// Alianzas Notas
+
+router.get('/alianzas-notas', OBRS_AlianzasNotas_CTS);
+
+router.get('/alianzas-notas/:id', OBR_AlianzasNotas_CTS);
+
+router.post('/alianzas-notas', CR_AlianzasNotas_CTS);
+
+router.put('/alianzas-notas/:id', UR_AlianzasNotas_CTS);
+
+router.delete('/alianzas-notas/:id', ER_AlianzasNotas_CTS);
+
+// ----------------------------------------
 // Exporta el enrutador
 export default router;

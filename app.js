@@ -28,7 +28,11 @@ import MealItemsModel from './Models/Diets/MD_TB_MealItems.js';
 
 import './Models/associations.js';
 import './Models/Rutinas_V2/relaciones.js';
+// Benjamin Orellana - 2026/04/13 - Importa el inicializador de relaciones del módulo Empresas / Alianzas.
+import initEmpresasRelaciones from './Models/Empresas/relaciones_empresas.js';
 
+// Benjamin Orellana - 2026/04/13 - Inicializa relaciones Sequelize del módulo Empresas / Alianzas.
+initEmpresasRelaciones();
 // CONFIGURACION PRODUCCION
 if (process.env.NODE_ENV !== 'production') {
   dotenv.config();

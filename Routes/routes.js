@@ -43,43 +43,6 @@ import {
   UR_Students_CTS
 } from '../Controllers/CTS_TB_Students.js';
 
-import {
-  OBR_Routines_CTS,
-  OBRS_Routines_CTS,
-  CR_Routines_CTS,
-  ER_Routines_CTS,
-  UR_Routines_CTS,
-  DL_RoutineExercisesByMuscle_CTS,
-  DL_UpdateMuscleName_CTS,
-  UR_CompletarRutina_CTS,
-  OBRS_RoutinesByInstructor_CTS
-} from '../Controllers/CTS_TB_Routines.js';
-
-import {
-  OBR_RoutineExercises_CTS,
-  OBRS_RoutineExercises_CTS,
-  CR_RoutineExercises_CTS,
-  ER_RoutineExercises_CTS,
-  UR_RoutineExercises_CTS
-} from '../Controllers/CTS_TB_RoutineExercises.js';
-
-import {
-  OBRS_RoutineFeedback_CTS,
-  OBR_RoutineFeedback_CTS,
-  CR_RoutineFeedback_CTS,
-  ER_RoutineFeedback_CTS,
-  UR_RoutineFeedback_CTS
-} from '../Controllers/CTS_TB_RoutineFeedback.js';
-
-import {
-  OBRS_RoutineRequests_CTS,
-  OBR_RoutineRequest_CTS,
-  CR_RoutineRequest_CTS,
-  ER_RoutineRequest_CTS,
-  UR_RoutineRequest_CTS,
-  atenderSolicitud // <-- (marcar como atendida)
-} from '../Controllers/CTS_TB_RoutineRequests.js';
-
 // import { getStats } from '../Controllers/CTS_TB_RoutineRequestStats.js';
 
 import {
@@ -302,83 +265,7 @@ router.delete('/students/:id', ER_Students_CTS);
 
 // Actualizar un estudiante por ID
 router.put('/students/:id', UR_Students_CTS);
-// ----------------------------------------------------------------
 
-// ----------------------------------------------------------------
-// Obtener todas las rutinas o filtrar por student_id
-router.get('/routines', OBRS_Routines_CTS);
-
-// Obtener una rutina por ID
-router.get('/routines/:id', OBRS_Routines_CTS);
-
-// Crear una nueva rutina
-router.post('/routines', CR_Routines_CTS);
-
-// Eliminar una rutina por ID
-router.delete('/routines/:id', ER_Routines_CTS);
-
-// Actualizar una rutina por ID
-router.put('/routines/:id', UR_Routines_CTS);
-
-// eliminar rutina y musculo
-router.delete('/routines/:routineId/:musculo', DL_RoutineExercisesByMuscle_CTS);
-// routes
-router.put('/routines/:routineId/muscle/:oldMuscle', DL_UpdateMuscleName_CTS);
-
-// Ruta para completar una rutina
-router.put('/routines/:id/completar', UR_CompletarRutina_CTS);
-
-router.get('/routines-by-instructor', OBRS_RoutinesByInstructor_CTS);
-
-// ----------------------------------------------------------------
-
-// ----------------------------------------------------------------
-// Obtener todos los ejercicios o filtrar por routine_id
-router.get('/routine_exercises', OBRS_RoutineExercises_CTS);
-
-// Obtener un ejercicio por id
-router.get('/routine_exercises/:id', OBR_RoutineExercises_CTS);
-
-// Crear un nuevo ejercicio
-router.post('/routine_exercises', CR_RoutineExercises_CTS);
-
-// Eliminar un ejercicio por id
-router.delete(
-  '/routines/:routineId/routines_exercises/:exerciseId',
-  ER_RoutineExercises_CTS
-);
-// Actualizar un ejercicio por id
-router.put(
-  '/routines/:routineId/routines_exercises/:exerciseId',
-  UR_RoutineExercises_CTS
-);
-// ----------------------------------------------------------------
-// Obtener todos los feedbacks o filtrar por rutina o alumno
-router.get('/routine-feedback', OBRS_RoutineFeedback_CTS);
-
-// Obtener un feedback específico por ID
-router.get('/routine-feedback/:id', OBR_RoutineFeedback_CTS);
-
-// Crear un nuevo feedback
-router.post('/routine-feedback', CR_RoutineFeedback_CTS);
-
-// Eliminar un feedback por ID
-router.delete('/routine-feedback/:id', ER_RoutineFeedback_CTS);
-
-// Actualizar un feedback por ID
-router.put('/routine-feedback/:id', UR_RoutineFeedback_CTS);
-// ----------------------------------------------------------------
-
-// ----------------------------------------------------------------
-// Rutas para routine_requests
-router.get('/routine_requests', OBRS_RoutineRequests_CTS);
-router.get('/routine_requests/:id', OBR_RoutineRequest_CTS);
-router.post('/routine_requests', CR_RoutineRequest_CTS);
-router.delete('/routine_requests/:id', ER_RoutineRequest_CTS);
-router.put('/routine_requests/:id', UR_RoutineRequest_CTS);
-
-// Nueva ruta para marcar solicitud como atendida y mover a stats
-router.post('/routine_requests/atender/:id', atenderSolicitud);
 
 // Ruta para consultar estadísticas
 // router.get('/routine_request_stats', getStats);
@@ -520,32 +407,6 @@ router.post('/student-rm', CR_StudentRM_CTS);
 router.put('/student-rm/:id', UR_StudentRM_CTS);
 router.delete('/student-rm/:id', ER_StudentRM_CTS);
 
-// ----------------------------------------------------------------
-// Obtener todos los logs o filtrar por alumno y/o ejercicio
-// router.get('/routine_exercise_logs', OBRS_RoutineExerciseLogs_CTS);
-
-// // 👉 Esta línea debe ir antes que la de :id
-// // GET /routine_exercise_logs/last?student_id=XX&routine_exercise_id=YY
-// router.get('/routine_exercise_logs/last', OBR_LastRoutineExerciseLog_CTS);
-
-// router.get(
-//   '/routine_exercise_logs/history',
-//   OBR_HistoryRoutineExerciseLogs_CTS
-// );
-// // Obtener un log por id
-// router.get('/routine_exercise_logs/:id', OBR_RoutineExerciseLog_CTS);
-
-// // Crear un nuevo log (registro de peso)
-// router.post('/routine_exercise_logs', CR_RoutineExerciseLog_CTS);
-
-// // Eliminar un log por id
-// router.delete('/routine_exercise_logs/:logId', ER_RoutineExerciseLog_CTS);
-
-// // Actualizar un log por id (opcional, si permitís edición)
-// router.put('/routine_exercise_logs/:logId', UR_RoutineExerciseLog_CTS);
-
-// // GET /routine_exercises/with_last_log?routine_id=XX&student_id=YY
-// router.get('/routine_exercises/with_last_log', OBRS_ExercisesWithLastLog_CTS);
 
 router.get('/rutina-colores', OBRS_RutinaColores_CTS);
 router.get('/rutina-colores/:id', OBR_RutinaColor_CTS);

@@ -26,7 +26,6 @@ import DietsModel from './Models/Diets/MD_TB_Diets.js';
 import MealsModel from './Models/Diets/MD_TB_Meals.js';
 import MealItemsModel from './Models/Diets/MD_TB_MealItems.js';
 
-import './Models/associations.js';
 import './Models/Rutinas_V2/relaciones.js';
 // Benjamin Orellana - 2026/04/13 - Importa el inicializador de relaciones del módulo Empresas / Alianzas.
 import initEmpresasRelaciones from './Models/Empresas/relaciones_empresas.js';

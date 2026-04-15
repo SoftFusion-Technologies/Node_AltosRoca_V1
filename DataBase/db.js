@@ -1,24 +1,37 @@
+// Benjamin Orellana - 2026/04/14 - Se ajusta Sequelize para usar variables de entorno reales en Cloud.
 import { Sequelize } from 'sequelize';
-import { DB_HOST, DB_NAME, DB_PASSWORD, DB_USER, DB_PORT } from './config.js';
+import {
+  DB_HOST,
+  DB_NAME,
+  DB_PASSWORD,
+  DB_USER,
+  DB_PORT,
+  NODE_ENV
+} from './config.js';
 
-const db = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
+const sequelizeOptions = {
   host: DB_HOST,
   port: DB_PORT,
   dialect: 'mysql',
   define: { freezeTableName: true },
   pool: {
-    max: 15, // Está bien para producción, ajusta según el tamaño esperado de la carga
+    max: 15,
     min: 5,
     acquire: 30000,
     idle: 10000
-  },
-  dialectOptions: {
-    connectTimeout: 60000, // Ajuste razonable para producción
+  }
+};
+
+if (NODE_ENV === 'production' && process.env.DB_SSL === 'true') {
+  sequelizeOptions.dialectOptions = {
+    connectTimeout: 60000,
     ssl: {
       require: true,
-      rejectUnauthorized: false // Solo si tu base de datos requiere SSL, verifica esto
+      rejectUnauthorized: false
     }
-  }
-});
+  };
+}
+
+const db = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, sequelizeOptions);
 
 export default db;

@@ -6,8 +6,16 @@ import cors from 'cors';
 
 // importamos la conexion de la base de datos
 import db from './DataBase/db.js';
+// Benjamin Orellana - 2026/04/14 - Se elimina configuración hardcodeada de MySQL y se reutilizan variables centralizadas.
+import {
+  PORT,
+  DB_HOST,
+  DB_USER,
+  DB_PASSWORD,
+  DB_NAME,
+  DB_PORT
+} from './DataBase/config.js';
 import GetRoutes from './Routes/routes.js';
-import dotenv from 'dotenv';
 
 import cron from 'node-cron';
 
@@ -19,7 +27,7 @@ import {
   login_profesores_pilates,
 } from './Security/auth.js'; // Importa las funciones del archivo auth.js
 import { crearAsistenciasDiariasAusentes } from './Controllers/CTS_TB_AsistenciasPilates.js';
-import { PORT } from './DataBase/config.js';
+// import { PORT } from './DataBase/config.js';
 import mysql from 'mysql2/promise'; // Usar mysql2 para las promesas
 
 import DietsModel from './Models/Diets/MD_TB_Diets.js';
@@ -39,9 +47,7 @@ initGaleriaRelaciones();
 
 import path from 'path';
 // CONFIGURACION PRODUCCION
-if (process.env.NODE_ENV !== 'production') {
-  dotenv.config();
-}
+
 
 // const PORT = process.env.PORT || 3000;
 
@@ -69,11 +75,13 @@ try {
   console.log(`El error de la conexion es : ${error}`);
 }
 
+// Benjamin Orellana - 2026/04/14 - Se crea pool MySQL usando variables de entorno productivas.
 const pool = mysql.createPool({
-  host: 'localhost', // Configurar según tu base de datos
-  user: 'root', // Configurar según tu base de datos
-  password: '123456', // Configurar según tu base de datos
-  database: 'DB_AltosRocaDESA_29032026'
+  host: DB_HOST,
+  user: DB_USER,
+  password: DB_PASSWORD,
+  database: DB_NAME,
+  port: DB_PORT
 });
 
 // Ruta de login

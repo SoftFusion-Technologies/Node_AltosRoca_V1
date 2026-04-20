@@ -19,6 +19,7 @@ import EjerciciosModel from '../../Models/Rutinas_V2/MD_TB_Ejercicios.js';
 import SeriesModel from '../../Models/Rutinas_V2/MD_TB_Series.js';
 import StudentsModel from '../../Models/MD_TB_Students.js';
 import RutinasAsignacionesModel from '../../Models/Rutinas_V2/MD_TB_RutinasAsignaciones.js';
+import EjerciciosCatalogoModel from '../../Models/Rutinas_V2/MD_TB_EjerciciosCatalogo.js';
 
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc.js';
@@ -28,6 +29,43 @@ dayjs.extend(utc);
 dayjs.extend(tz);
 
 const TZ = 'America/Argentina/Tucuman';
+
+/* Benjamin Orellana - 2026/04/20 - Normaliza nombres de ejercicios para evitar duplicados por espacios sobrantes al sincronizar con el catálogo. */
+const normalizarNombreEjercicioCatalogo = (nombre) => {
+  if (!nombre) return '';
+  return String(nombre).replace(/\s+/g, ' ').trim();
+};
+
+/* Benjamin Orellana - 2026/04/20 - Garantiza que cada ejercicio creado en la rutina exista también en el catálogo maestro. */
+const asegurarEjercicioEnCatalogo = async (
+  ejercicio = {},
+  transaction = null
+) => {
+  const nombreNormalizado = normalizarNombreEjercicioCatalogo(ejercicio.nombre);
+
+  if (!nombreNormalizado) return null;
+
+  const ejercicioCatalogoExistente = await EjerciciosCatalogoModel.findOne({
+    where: { nombre: nombreNormalizado },
+    transaction
+  });
+
+  if (ejercicioCatalogoExistente) {
+    return ejercicioCatalogoExistente;
+  }
+
+  return await EjerciciosCatalogoModel.create(
+    {
+      nombre: nombreNormalizado,
+      musculo: ejercicio.musculo || null,
+      aliases: ejercicio.aliases || null,
+      tags: ejercicio.tags || null,
+      video_url: ejercicio.video_url || null,
+      created_at: new Date()
+    },
+    { transaction }
+  );
+};
 
 export const OBR_RutinaCompleta_CTS = async (req, res) => {
   try {
@@ -127,11 +165,11 @@ export const CR_RutinaCompleta_CTS = async (req, res) => {
     };
 
     if (!isValidDate(fecha) || !isValidDate(desde)) {
+      await t.rollback();
       return res.status(400).json({
         mensajeError: 'Las fechas "fecha" y "desde" deben ser válidas'
       });
     }
-
     // Si 'hasta' no es válida, lo dejamos como null
     const fechaHasta = isValidDate(hasta) ? hasta : null;
 
@@ -163,10 +201,13 @@ export const CR_RutinaCompleta_CTS = async (req, res) => {
 
       // 3. Crear ejercicios del bloque
       for (const ejercicio of bloque.ejercicios || []) {
+        /* Benjamin Orellana - 2026/04/20 - Se sincroniza automáticamente cada ejercicio nuevo con el catálogo maestro al crear la rutina. */
+        await asegurarEjercicioEnCatalogo(ejercicio, t);
+
         const ejercicioCreado = await EjerciciosModel.create(
           {
             bloque_id: bloqueCreado.id,
-            nombre: ejercicio.nombre,
+            nombre: normalizarNombreEjercicioCatalogo(ejercicio.nombre),
             orden: ejercicio.orden,
             notas: ejercicio.notas || null
           },
@@ -563,10 +604,13 @@ export const CR_RutinaCompleta_Lote_CTS = async (req, res) => {
           );
 
           for (const e of b.ejercicios || []) {
+            /* Benjamin Orellana - 2026/04/20 - Se sincroniza automáticamente cada ejercicio del lote con el catálogo maestro antes de persistirlo en la rutina. */
+            await asegurarEjercicioEnCatalogo(e, t);
+
             const ejercicioCreado = await EjerciciosModel.create(
               {
                 bloque_id: bloqueCreado.id,
-                nombre: e.nombre,
+                nombre: normalizarNombreEjercicioCatalogo(e.nombre),
                 orden: e.orden,
                 notas: e.notas ?? null
               },
@@ -608,7 +652,6 @@ export const CR_RutinaCompleta_Lote_CTS = async (req, res) => {
       .json({ mensajeError: 'Error en asignación en lote' });
   }
 };
-
 
 export const OBR_RutinasAsignadasHoyAlumno_CTS = async (req, res) => {
   try {

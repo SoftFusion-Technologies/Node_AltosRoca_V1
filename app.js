@@ -24,7 +24,7 @@ import {
   authenticateToken,
   loginAlumno,
   authenticateStudent,
-  login_profesores_pilates,
+  login_profesores_pilates
 } from './Security/auth.js'; // Importa las funciones del archivo auth.js
 import { crearAsistenciasDiariasAusentes } from './Controllers/CTS_TB_AsistenciasPilates.js';
 // import { PORT } from './DataBase/config.js';
@@ -47,7 +47,6 @@ initGaleriaRelaciones();
 
 import path from 'path';
 // CONFIGURACION PRODUCCION
-
 
 // const PORT = process.env.PORT || 3000;
 
@@ -149,10 +148,9 @@ app.get('/estadisticas/rutinas-por-profesor', async (req, res) => {
          u.id AS profesor_id,
          u.name AS profesor_nombre,
          COUNT(r.id) AS total_rutinas
-       FROM routines r
-       INNER JOIN students s ON r.student_id = s.id
-       INNER JOIN users u ON s.user_id = u.id
-       WHERE r.mes = ? AND r.anio = ?
+       FROM rutinas r
+       INNER JOIN users u ON r.instructor_id = u.id
+       WHERE MONTH(r.fecha) = ? AND YEAR(r.fecha) = ?
        GROUP BY u.id, u.name
        ORDER BY total_rutinas DESC`,
       [mes, anio]
@@ -239,8 +237,8 @@ app.get('/estadisticas/rutinas-por-alumno', async (req, res) => {
     const query = `
       SELECT 
         COUNT(*) AS total_rutinas_cargadas,
-        SUM(CASE WHEN completado = TRUE THEN 1 ELSE 0 END) AS total_rutinas_completadas
-      FROM routines
+        0 AS total_rutinas_completadas
+      FROM rutinas
       WHERE student_id = ?
         AND MONTH(fecha) = ?
         AND YEAR(fecha) = ?
@@ -265,11 +263,14 @@ app.get('/estadisticas/ranking-activos', async (req, res) => {
     const query = `
       SELECT s.id AS student_id, s.nomyape, 
         COUNT(r.id) AS rutinas_asignadas,
-        SUM(CASE WHEN r.completado = TRUE THEN 1 ELSE 0 END) AS rutinas_completadas
+        0 AS rutinas_completadas
       FROM students s
-      LEFT JOIN routines r ON s.id = r.student_id AND r.mes = ? AND r.anio = ?
-      GROUP BY s.id
-      ORDER BY rutinas_completadas DESC
+      LEFT JOIN rutinas r 
+        ON s.id = r.student_id
+        AND MONTH(r.fecha) = ?
+        AND YEAR(r.fecha) = ?
+      GROUP BY s.id, s.nomyape
+      ORDER BY rutinas_asignadas DESC
       LIMIT 10
     `;
     const [results] = await pool.query(query, [mes, anio]);
@@ -305,15 +306,15 @@ app.get('/routine-feedbacks', async (req, res) => {
         rf.comentario,
         rf.created_at AS feedback_date,
         r.id AS rutina_id,
-        r.mes,
-        r.anio,
+        MONTH(r.fecha) AS mes,
+        YEAR(r.fecha) AS anio,
         r.fecha AS rutina_fecha,
         s.nomyape AS alumno,
         s.id AS student_id,
         u.name AS instructor,
         u.id AS instructor_id
       FROM routine_feedback rf
-      JOIN routines r ON rf.routine_id = r.id
+      JOIN rutinas r ON rf.routine_id = r.id
       JOIN students s ON rf.student_id = s.id
       JOIN users u ON s.user_id = u.id
       WHERE u.id = ? AND s.id = ?
@@ -384,8 +385,8 @@ app.get('/students/:studentId/progress', async (req, res) => {
       `SELECT 
           r.id AS rutina_id,
           r.fecha,
-          r.mes,
-          r.anio,
+          MONTH(r.fecha) AS mes,
+          YEAR(r.fecha) AS anio,
           rf.gusto,
           rf.dificultad,
           rf.comentario,
@@ -395,7 +396,7 @@ app.get('/students/:studentId/progress', async (req, res) => {
           e.orden,
           rr.estado AS solicitud_estado,
           rr.mensaje AS solicitud_mensaje
-       FROM routines r
+       FROM rutinas r
        LEFT JOIN routine_feedback rf ON rf.routine_id = r.id AND rf.student_id = r.student_id
        LEFT JOIN routine_exercises e ON e.routine_id = r.id
        LEFT JOIN routine_requests rr ON rr.routine_id = r.id AND rr.student_id = r.student_id AND rr.exercise_id = e.id
@@ -588,8 +589,8 @@ app.get('/students/:studentId/progress-comparison', async (req, res) => {
           cumplioObjetivoPeso === null
             ? 'NO_EVALUA_PESO'
             : cumplioObjetivoPeso
-            ? 'COMPLETADO'
-            : 'EN_PROGRESO';
+              ? 'COMPLETADO'
+              : 'EN_PROGRESO';
       }
 
       return {
@@ -658,13 +659,19 @@ app.get('/dietss/', async (req, res) => {
   }
 });
 
-cron.schedule('1 0 * * *', () => {
-  console.log('[CRON] Disparando la tarea programada diaria de asistencias...');
-  crearAsistenciasDiariasAusentes();
-}, {
-  scheduled: true,
-  timezone: "America/Argentina/Buenos_Aires" 
-});
+cron.schedule(
+  '1 0 * * *',
+  () => {
+    console.log(
+      '[CRON] Disparando la tarea programada diaria de asistencias...'
+    );
+    crearAsistenciasDiariasAusentes();
+  },
+  {
+    scheduled: true,
+    timezone: 'America/Argentina/Buenos_Aires'
+  }
+);
 
 if (!PORT) {
   console.error('El puerto no está definido en el archivo de configuración.');
